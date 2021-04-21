@@ -38,7 +38,7 @@ namespace barbeiro_dorminhoco
             {
                 if(startTime > WorkTime) break;
 
-                if(Clientes.Fila.Count > 1) 
+                if(Clientes.Fila.Count > 0) 
                     AtenderCliente(Clientes.Fila.Dequeue());
 
                 startTime++;

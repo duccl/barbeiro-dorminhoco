@@ -11,7 +11,7 @@ namespace barbeiro_dorminhoco
         private Thread Worker;
         public string Name { get; set; }
         public TimeSpan TempoAguardando { get; set; } = default;
-        public int TempoParaCortarCabelo => new Random().Next(0, 4000);
+        public int TempoParaCortarCabelo => new Random().Next(2000, 3000);
 
         public bool Atendido { get; set; }
 

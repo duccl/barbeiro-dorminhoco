@@ -1,17 +1,17 @@
-using System;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
 namespace barbeiro_dorminhoco
 {
-    public class Barbeiro: IBarbeiro
+    public class Barbeiro : IBarbeiro
     {
         #region .: Properties :.
-            
+
         private readonly Thread Worker;
         private readonly ILogger<Barbeiro> _logger;
         public string Id { get; }
-        private const int WorkTime = 20000;
+        public const int TempoMaximoEntreClientes = 3000;
+        public int TempoDormido { get; set; } = 0;
 
         #endregion
 
@@ -33,15 +33,28 @@ namespace barbeiro_dorminhoco
 
         public void DoWork()
         {
-            int startTime = 0;
             while (true)
             {
-                if(startTime > WorkTime) break;
+                if (Clientes.Fila.Count > 0)
+                {
+                    var cliente = Clientes.Fila.Dequeue();
+                    AtenderCliente(cliente);
+                    TentarDormir(Clientes.Fila.Count, cliente.TempoParaCortarCabelo);
+                }
 
-                if(Clientes.Fila.Count > 0) 
-                    AtenderCliente(Clientes.Fila.Dequeue());
+            }
+        }
 
-                startTime++;
+        private void TentarDormir(int clientesNaFila, int tempoDeCorteDoClienteAnterior)
+        {
+            int tempoParaDormir = TempoMaximoEntreClientes - tempoDeCorteDoClienteAnterior;
+            _logger.LogInformation($"Sobraram {tempoParaDormir} para eu dormir! Vamos ver se consigo");
+            if (clientesNaFila == 0)
+            {
+                _logger.LogWarning($"Vou dormir um pouco...");
+                Thread.Sleep(tempoParaDormir);
+                TempoDormido += tempoParaDormir;
+                _logger.LogWarning("Poxa vamos trabalhar ne..");
             }
         }
 

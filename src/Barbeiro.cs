@@ -51,6 +51,7 @@ namespace barbeiro_dorminhoco
             _logger.LogInformation($"Vou demorar {cliente.TempoParaCortarCabelo} para cortar o cabelo..");
             Thread.Sleep(cliente.TempoParaCortarCabelo);
             _logger.LogInformation($"Ufa consegui cortar!");
+            cliente.IrEmbora();
         }
 
         #endregion

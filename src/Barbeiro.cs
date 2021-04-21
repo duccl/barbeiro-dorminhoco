@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace barbeiro_dorminhoco
 {
-    public class Barbeiro
+    public class Barbeiro: IBarbeiro
     {
         #region .: Properties :.
             

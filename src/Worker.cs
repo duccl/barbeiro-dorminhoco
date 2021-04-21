@@ -29,8 +29,8 @@ namespace barbeiro_dorminhoco
                     Name = Guid.NewGuid().ToString()
                 };
                 cliente.EntrarNaFila();
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(new Random().Next(0,1000), stoppingToken);
+                _logger.LogInformation($"Client {cliente.Name} arrived at: {DateTimeOffset.Now} and Barber sleeped {_barbeiro.TempoDormido}");
+                await Task.Delay(3000, stoppingToken);
             }
             _barbeiro.StopWorking();
         }

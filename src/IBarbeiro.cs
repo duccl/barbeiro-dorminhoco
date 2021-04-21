@@ -4,5 +4,6 @@ namespace barbeiro_dorminhoco
     {
         void StartWorking();
         void StopWorking();
+        int TempoDormido {get;}
     }
 }

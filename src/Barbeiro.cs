@@ -3,15 +3,15 @@ using Microsoft.Extensions.Logging;
 
 namespace barbeiro_dorminhoco
 {
-    public class Barbeiro: IBarbeiro
+    public class Barbeiro : IBarbeiro
     {
         #region .: Properties :.
-            
+
         private readonly Thread Worker;
         private readonly ILogger<Barbeiro> _logger;
         public string Id { get; }
         public const int TempoMaximoEntreClientes = 3000;
-        public int TempoDormido {get; set;} = 0;
+        public int TempoDormido { get; set; } = 0;
 
         #endregion
 
@@ -35,8 +35,26 @@ namespace barbeiro_dorminhoco
         {
             while (true)
             {
-                if(Clientes.Fila.Count > 0) 
-                    AtenderCliente(Clientes.Fila.Dequeue());
+                if (Clientes.Fila.Count > 0)
+                {
+                    var cliente = Clientes.Fila.Dequeue();
+                    AtenderCliente(cliente);
+                    TentarDormir(Clientes.Fila.Count, cliente.TempoParaCortarCabelo);
+                }
+
+            }
+        }
+
+        private void TentarDormir(int clientesNaFila, int tempoDeCorteDoClienteAnterior)
+        {
+            int tempoParaDormir = TempoMaximoEntreClientes - tempoDeCorteDoClienteAnterior;
+            _logger.LogInformation($"Sobraram {tempoParaDormir} para eu dormir! Vamos ver se consigo");
+            if (clientesNaFila == 0)
+            {
+                _logger.LogWarning($"Vou dormir um pouco...");
+                Thread.Sleep(tempoParaDormir);
+                TempoDormido += tempoParaDormir;
+                _logger.LogWarning("Poxa vamos trabalhar ne..");
             }
         }
 
@@ -45,13 +63,7 @@ namespace barbeiro_dorminhoco
             _logger.LogInformation($"Opa, cliente {cliente.Name} sendo atendido! Ele estava {cliente.TempoAguardando} aguardando tudo isso");
             _logger.LogInformation($"Vou demorar {cliente.TempoParaCortarCabelo} para cortar o cabelo..");
             Thread.Sleep(cliente.TempoParaCortarCabelo);
-            int tempoParaDormir = TempoMaximoEntreClientes-cliente.TempoParaCortarCabelo;
             _logger.LogInformation($"Ufa consegui cortar!");
-            _logger.LogInformation($"Sobraram {tempoParaDormir} para eu dormir!");
-            _logger.LogInformation($"Vou dormir um pouco...");
-            Thread.Sleep(tempoParaDormir);
-            TempoDormido+= tempoParaDormir;
-            _logger.LogInformation("Poxa vamos trabalhar ne..");
         }
 
         #endregion

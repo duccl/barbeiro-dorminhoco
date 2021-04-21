@@ -21,7 +21,7 @@ namespace barbeiro_dorminhoco
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _barbeiro.DoWork();
+            _barbeiro.StartWorking();
             while (!stoppingToken.IsCancellationRequested)
             {
                 var cliente = new Cliente
@@ -32,6 +32,7 @@ namespace barbeiro_dorminhoco
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(new Random().Next(0,1000), stoppingToken);
             }
+            _barbeiro.StopWorking();
         }
     }
 }

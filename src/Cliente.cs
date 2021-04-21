@@ -11,7 +11,7 @@ namespace barbeiro_dorminhoco
         private Thread Worker;
         public string Name { get; set; }
         public TimeSpan TempoAguardando { get; set; } = default;
-        public int TempoParaCortarCabelo => new Random(3).Next(0, 80000);
+        public int TempoParaCortarCabelo => new Random().Next(0, 4000);
 
         public bool Atendido { get; set; }
 
@@ -33,8 +33,6 @@ namespace barbeiro_dorminhoco
             Clientes.Fila.Enqueue(this);
             Worker.Start();
         }
-
-        public void IrEmbora() => Worker.Interrupt();
 
         public void Wait()
         {

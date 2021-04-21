@@ -11,18 +11,26 @@ namespace barbeiro_dorminhoco
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly IBarbeiro _barbeiro;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IBarbeiro barbeiro)
         {
             _logger = logger;
+            _barbeiro = barbeiro;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _barbeiro.DoWork();
             while (!stoppingToken.IsCancellationRequested)
             {
+                var cliente = new Cliente
+                {
+                    Name = Guid.NewGuid().ToString()
+                };
+                cliente.EntrarNaFila();
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(new Random().Next(0,1000), stoppingToken);
             }
         }
     }
